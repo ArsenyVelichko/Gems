@@ -1,0 +1,40 @@
+<RCC>
+    <qresource prefix="/Gems">
+        <file alias="cyan">textures/cyan.png</file>
+        <file alias="green">textures/green.png</file>
+        <file alias="red">textures/red.png</file>
+        <file alias="blue">textures/blue.png</file>
+        <file alias="magenta">textures/magenta.png</file>
+        <file alias="yellow">textures/yellow.png</file>
+        <file alias="background">textures/background.png</file>
+    </qresource>
+    <qresource prefix="/Animations">
+        <file alias="LFrame1">textures/Animations/Lightning_Frame1.png</file>
+        <file alias="LFrame2">textures/Animations/Lightning_Frame2.png</file>
+        <file alias="LFrame3">textures/Animations/Lightning_Frame3.png</file>
+        <file alias="LFrame4">textures/Animations/Lightning_Frame4.png</file>
+        <file alias="LFrame5">textures/Animations/Lightning_Frame5.png</file>
+        <file alias="LFrame6">textures/Animations/Lightning_Frame6.png</file>
+        <file alias="LFrame7">textures/Animations/Lightning_Frame7.png</file>
+        <file alias="TFrame1">textures/Animations/Thunder_Frame1.png</file>
+        <file alias="TFrame2">textures/Animations/Thunder_Frame2.png</file>
+        <file alias="TFrame3">textures/Animations/Thunder_Frame3.png</file>
+        <file alias="TFrame4">textures/Animations/Thunder_Frame4.png</file>
+        <file alias="TFrame5">textures/Animations/Thunder_Frame5.png</file>
+        <file alias="TFrame6">textures/Animations/Thunder_Frame6.png</file>
+        <file alias="TFrame7">textures/Animations/Thunder_Frame7.png</file>
+        <file alias="TFrame8">textures/Animations/Thunder_Frame8.png</file>
+        <file alias="TFrame9">textures/Animations/Thunder_Frame9.png</file>
+        <file alias="TFrame10">textures/Animations/Thunder_Frame10.png</file>
+        <file alias="FFrame1">textures/Animations/ColorChangeIdle_Frame1.png</file>
+        <file alias="FFrame2">textures/Animations/ColorChangeIdle_Frame2.png</file>
+        <file alias="FFrame3">textures/Animations/ColorChangeIdle_Frame3.png</file>
+        <file alias="FFrame4">textures/Animations/ColorChangeIdle_Frame4.png</file>
+        <file alias="FFrame5">textures/Animations/ColorChangeIdle_Frame5.png</file>
+        <file alias="FFrame6">textures/Animations/ColorChangeIdle_Frame6.png</file>
+        <file alias="FFrame7">textures/Animations/ColorChangeIdle_Frame7.png</file>
+        <file alias="FFrame8">textures/Animations/ColorChangeIdle_Frame8.png</file>
+        <file alias="FFrame9">textures/Animations/ColorChangeIdle_Frame9.png</file>
+        <file alias="FFrame10">textures/Animations/ColorChangeIdle_Frame10.png</file>
+    </qresource>
+</RCC>
