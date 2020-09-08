@@ -14,7 +14,7 @@ TypeChangeInterface* InterfaceQueue::dequeue() {
   QParallelAnimationGroup* moveGroup = new QParallelAnimationGroup;
 
   int i = 0;
-  for (QGraphicsObject* currInterface : *this) {
+  for (TypeChangeInterface* currInterface : *this) {
     QPropertyAnimation* singleMove = new QPropertyAnimation(currInterface, "pos");
     singleMove->setEndValue(_startPoint + i * _bias.toPointF());
     moveGroup->addAnimation(singleMove);

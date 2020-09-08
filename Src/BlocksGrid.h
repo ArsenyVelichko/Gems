@@ -9,23 +9,27 @@
 #include <QTimer>
 #include <QGraphicsSceneMouseEvent>
 
-class BlocksGrid : public QGraphicsObject {
+struct BlocksShape;
+enum class ShapeName;
+
+class BlocksGrid : public QObject, public QGraphicsRectItem {
   Q_OBJECT
 
   QVector<QVector<Block*>> _grid;
-  QRectF _boundRect;
   QList<QPoint> _removedBlocks;
-  QTimer _waitBeforeDrop;
+  QTimer* _waitBeforeDrop;
 
   int findMatches(int row, int column, QSet<int>& removedBlocks);
   void swapBlocks(const QPoint& coord1, const QPoint& coord2, bool updateRequired);
   bool isNeighbors(const QPoint& coord1, const QPoint& coord2) const;
   void dropBlocks();
-  
+  void spawnBonus(const QPoint& spawnPoint);
+
   void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override {}
 
 public:
   BlocksGrid(int rowsNumber, int columnsNumber, const QRectF& rect);
+  ~BlocksGrid();
 
   Block* at(const QPoint& coord) const { return _grid[coord.x()][coord.y()]; }
   Block*& at(const QPoint& coord) { return _grid[coord.x()][coord.y()]; }
@@ -34,9 +38,6 @@ public:
   int rowsN() const { return _grid.size(); }
   int columnsN() const { return _grid[0].size(); }
   QPoint calcIndexes(const QPointF& pos) const;
-  QRectF boundingRect() const override { return _boundRect; }
-  double width() { return _boundRect.width(); }
-  double height() { return _boundRect.height(); }
 
   bool sceneEventFilter(QGraphicsItem *watched, QEvent *event);
 

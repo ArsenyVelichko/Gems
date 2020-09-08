@@ -248,8 +248,9 @@ QVector<QStaticText*> TypeChangeInterface::_rasterizedNums = QVector<QStaticText
 
 void TypeChangeInterface::init() {
   for (int i = 0; i <= TYPE_CHANGES_NUMBER; i++) {
+    QFont font("Helvetica [Adobe]", 16, QFont::Bold);
     TypeChangeInterface::_rasterizedNums[i] = new QStaticText(QString::number(i));
-    _rasterizedNums[i]->prepare();
+    _rasterizedNums[i]->prepare(QTransform(), font);
   }
 }
 
@@ -267,8 +268,13 @@ TypeChangeInterface::TypeChangeInterface(TypeChange* parentBonus) : _bonus(paren
 void TypeChangeInterface::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
   painter->drawPixmap(-_texture->width() / 2, -_texture->height() / 2, *_texture);
 
-  QSizeF symbolSize = _rasterizedNums[_bonus->changesRemain()]->size();
-  painter->drawStaticText(-symbolSize.width() / 2, -symbolSize.height() / 2 , *_rasterizedNums[_bonus->changesRemain()]);
+  QFont font("Helvetica [Adobe]", 16, QFont::Bold);
+  painter->setFont(font);
+
+  QStaticText text = *_rasterizedNums[_bonus->changesRemain()];
+  QSizeF textSize = text.size();
+  QPointF leftTop(-textSize.width() / 2, -textSize.height() / 2);
+  painter->drawStaticText(leftTop, text);
   Q_UNUSED(widget);
   Q_UNUSED(option);
 }

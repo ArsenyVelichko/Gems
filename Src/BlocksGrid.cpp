@@ -4,12 +4,14 @@
 
 #define MIN_DURATION 350
 #define DURATION_STEP 50
+#define BLOCKS_FOR_BONUS 5
 
-BlocksGrid::BlocksGrid(int rowsNumber, int columnsNumber, const QRectF& rect) {
-  _waitBeforeDrop.setSingleShot(true);
-  QObject::connect(&_waitBeforeDrop, &QTimer::timeout, this, &BlocksGrid::dropBlocks);
+BlocksGrid::BlocksGrid(int rowsNumber, int columnsNumber, const QRectF& rect)
+  : QGraphicsRectItem(rect) {
+  _waitBeforeDrop = new QTimer;
+  _waitBeforeDrop->setSingleShot(true);
+  QObject::connect(_waitBeforeDrop, &QTimer::timeout, this, &BlocksGrid::dropBlocks);
 
-  _boundRect = rect;
   double blockWidth = rect.width() / columnsNumber;
   double blockHeight = rect.height() / rowsNumber;
   Block::setSizes(QSizeF(blockWidth, blockHeight));
@@ -76,7 +78,7 @@ int BlocksGrid::findMatches(int row, int column, QSet<int>& removedBlocks) {
 
 void BlocksGrid::dropBlocks() {
   emit blocksRemoved();
-  _waitBeforeDrop.setInterval(0);
+  _waitBeforeDrop->setInterval(0);
 
   QVector<int> lowestIndexes(columnsN(), -1);
 
@@ -89,7 +91,7 @@ void BlocksGrid::dropBlocks() {
 
   QParallelAnimationGroup* dropGroup = new QParallelAnimationGroup;
   double blockHeight = Block::sizes().height();
-  double startY = _boundRect.top() - blockHeight / 2;
+  double startY = rect().top() - blockHeight / 2;
 
   for (int j = 0; j < lowestIndexes.size(); j++) {
 
@@ -141,6 +143,23 @@ void BlocksGrid::dropBlocks() {
   dropGroup->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
+void BlocksGrid::spawnBonus(const QPoint& spawnPoint) {
+  Bonus* newBonus;
+  if (rand() / double(RAND_MAX) > 0.5) {
+    newBonus = new ExplosionWave(at(spawnPoint), this);
+
+  } else {
+    newBonus = new TypeChange(at(spawnPoint), this);
+  }
+
+  QMetaObject::Connection* conn = new QMetaObject::Connection;
+  *conn = QObject::connect(this, &BlocksGrid::blocksRemoved, [this, newBonus, conn]() {
+    newBonus->nextStage();
+    QObject::disconnect(*conn);
+    delete conn;
+  });
+}
+
 void BlocksGrid::updateBlocks() {
   QList<QPoint> prevRemovedBlocks = _removedBlocks;
   _removedBlocks.clear();
@@ -155,28 +174,18 @@ void BlocksGrid::updateBlocks() {
       int matchesN;
       if ((matchesN = findMatches(removedCoord.x(), removedCoord.y(), sameBlocks)) >= 3) {
 
-        if (matchesN >= 5) {
-
-          Bonus* newBonus;
-          if (rand() / double(RAND_MAX) < 0.5) {
-            newBonus = new ExplosionWave(at(removedCoord), this);
-          } else {
-            newBonus = new TypeChange(at(removedCoord), this);
-          }
-
-          QMetaObject::Connection* conn = new QMetaObject::Connection;
-          *conn = QObject::connect(this, &BlocksGrid::blocksRemoved, [this, newBonus, conn]() {
-            newBonus->nextStage();
-            QObject::disconnect(*conn);
-            delete conn;
-          });
+        if (matchesN >= BLOCKS_FOR_BONUS) {
+          spawnBonus(removedCoord);
         }
 
+        QList<QPoint> blocksToRemove;
         for (int scalarCoord : sameBlocks) {
           QPoint coord(scalarCoord / columnsN(), scalarCoord % columnsN());
           at(coord)->setType(BlockType::EMPTY);
-          _removedBlocks.append(coord);
+          blocksToRemove.append(coord);
         }
+
+        removeBlocks(blocksToRemove);
         isTriplet = true;
       }
     }
@@ -187,12 +196,11 @@ void BlocksGrid::updateBlocks() {
     if (prevRemovedBlocks.size() == 2) {
       swapBlocks(prevRemovedBlocks[0], prevRemovedBlocks[1], false);
     }
-
     setEnabled(true);
-    return;
-  }
 
-  _waitBeforeDrop.start();
+  } else {
+    _waitBeforeDrop->start();
+  }
 }
 
 void BlocksGrid::swapBlocks(const QPoint& coord1, const QPoint& coord2, bool updateRequired) {
@@ -223,8 +231,9 @@ void BlocksGrid::swapBlocks(const QPoint& coord1, const QPoint& coord2, bool upd
 }
 
 QPoint BlocksGrid::calcIndexes(const QPointF& pos) const {
-  int column = int((pos.x() / _boundRect.width() + 0.5) * columnsN());
-  int row = int((pos.y() / _boundRect.height() + 0.5) * rowsN());
+  QRectF gridRect = rect();
+  int column = int((pos.x() / gridRect.width() + 0.5) * columnsN());
+  int row = int((pos.y() / gridRect.height() + 0.5) * rowsN());
   return QPoint(row, column);
 }
 
@@ -260,12 +269,16 @@ bool BlocksGrid::sceneEventFilter(QGraphicsItem* watched, QEvent* event) {
 }
 
 void BlocksGrid::prolongWaitingTime(int time) {
-  int remainingTime = _waitBeforeDrop.remainingTime();
+  int remainingTime = _waitBeforeDrop->remainingTime();
   if (remainingTime < time) {
-    _waitBeforeDrop.start(time);
+    _waitBeforeDrop->start(time);
   }
 }
 
 void BlocksGrid::removeBlocks(const QList<QPoint>& blocksList) {
   _removedBlocks.append(blocksList);
+}
+
+BlocksGrid::~BlocksGrid() {
+  delete _waitBeforeDrop;
 }
