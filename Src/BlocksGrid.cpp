@@ -165,7 +165,7 @@ void BlocksGrid::updateBlocks() {
   _removedBlocks.clear();
 
   bool isTriplet = false;
-  for (QPoint removedCoord : prevRemovedBlocks) {
+  for (QPoint& removedCoord : prevRemovedBlocks) {
 
     BlockType type = at(removedCoord)->blockType();
     if (type != BlockType::EMPTY) {

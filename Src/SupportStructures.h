@@ -1,5 +1,4 @@
-#ifndef  SUPPORTSTRUCTURES_H
-#define SUPPORTSTRUCTURES_H
+#pragma once
 
 #include <QQueue>
 #include <QVector2D>
@@ -21,5 +20,3 @@ public:
   TypeChangeInterface* last() { return QQueue::last(); }
   TypeChangeInterface* head() { return QQueue::head(); }
 };
-
-#endif // SUPPORTSTRUCTURES_H

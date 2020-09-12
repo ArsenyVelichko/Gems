@@ -1,5 +1,4 @@
-#ifndef BONUS_H
-#define BONUS_H
+#pragma once
 
 #include <QList>
 #include <QAbstractAnimation>
@@ -136,5 +135,3 @@ public:
   static void init();
   static void clear();
 };
-
-#endif //BONUS_H

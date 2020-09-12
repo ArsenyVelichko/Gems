@@ -1,5 +1,5 @@
-#ifndef BLOCK_H
-#define BLOCK_H
+#pragma once
+
 #include <QGraphicsItem>
 
 enum class BlockType {
@@ -39,5 +39,3 @@ signals:
 };
 
 QSharedPointer<QPixmap> defineBlockTexture(BlockType type);
-
-#endif //BLOCK_H

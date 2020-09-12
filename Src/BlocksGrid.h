@@ -1,5 +1,4 @@
-#ifndef BLOCKSGRID_H
-#define BLOCKSGRID_H
+#pragma once
 
 #include <QVector>
 #include <QGraphicsItem>
@@ -8,9 +7,6 @@
 #include "Bonus.h"
 #include <QTimer>
 #include <QGraphicsSceneMouseEvent>
-
-struct BlocksShape;
-enum class ShapeName;
 
 class BlocksGrid : public QObject, public QGraphicsRectItem {
   Q_OBJECT
@@ -31,8 +27,8 @@ public:
   BlocksGrid(int rowsNumber, int columnsNumber, const QRectF& rect);
   ~BlocksGrid();
 
-  Block* at(const QPoint& coord) const { return _grid[coord.x()][coord.y()]; }
   Block*& at(const QPoint& coord) { return _grid[coord.x()][coord.y()]; }
+  const Block* at(const QPoint& coord) const { return _grid[coord.x()][coord.y()]; }
   QVector<Block*> operator[](size_t row) const { return _grid[row]; }
   
   int rowsN() const { return _grid.size(); }
@@ -49,5 +45,3 @@ public slots:
 signals:
   void blocksRemoved();
 };
-
-#endif //BLOCKSGRID_H
